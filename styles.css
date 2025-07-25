@@ -1,0 +1,95 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 10px;
+  background-color: #f9f9f9;
+  width: 800px; /* 팝업 창의 기본 너비 */
+  height: auto;
+  box-sizing: border-box;
+}
+
+input#searchInput {
+  display: block;
+  margin: 0 auto 20px;
+  padding: 10px;
+  width: 90%; /* 검색창 너비 확장 */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px; /* 글자 크기 증가 */
+}
+
+table {
+  width: 100%; /* 테이블을 창 너비에 맞게 확장 */
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  text-align: center;
+  padding: 10px;
+  font-size: 14px; /* 글자 크기 증가 */
+}
+
+th {
+  background-color: #007BFF; /* 헤더 색상 */
+  color: white;
+  font-size: 16px; /* 헤더 글자 크기 증가 */
+}
+
+button {
+  padding: 8px 15px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 14px; /* 버튼 글자 크기 증가 */
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+tbody tr:hover {
+  background-color: #f1f1f1; /* 테이블 행 마우스 오버 색상 */
+}
+
+h3 {
+  text-align: center;
+  font-size: 18px; /* 제목 크기 증가 */
+  margin-bottom: 20px;
+}
+
+
+/*<!DOCTYPE html>*/
+/*<html>*/
+/*<head>*/
+/*    <meta charset="UTF-8">*/
+/*    <style>*/
+/*        body {*/
+/*            width: 600px;*/
+/*            padding: 10px;*/
+/*        }*/
+/*        #searchInput {*/
+/*            width: 100%;*/
+/*            padding: 8px;*/
+/*            margin-bottom: 10px;*/
+/*            box-sizing: border-box;*/
+/*        }*/
+/*        table {*/
+/*            width: 100%;*/
+/*            border-collapse: collapse;*/
+/*        }*/
+/*        th, td {*/
+/*            border: 1px solid #ddd;*/
+/*            padding: 8px;*/
+/*            text-align: left;*/
+/*        }*/
+/*        th {*/
+/*            background-color: #f2f2f2;*/
+/*        }*/
+/*        tr:nth-child(even) {*/
+/*            background-color: #f9f9f9;*/
+/*        }*/
+/*    </style>*/
+/*</head>*/
