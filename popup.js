@@ -1,23 +1,33 @@
 let data = [];
 
 // 메시지를 content script로 보내는 헬퍼 함수
-async function sendMessageToContentScript(tabId, message) {
+async function sendMessageToContentScript(tabId, message, retries = 3) {
   try {
     await chrome.scripting.executeScript({
       target: { tabId: tabId },
       files: ['content.js'],
     });
   } catch (e) {
-    // content.js가 이미 주입되어 있을 경우 발생하는 에러는 무시
     if (!e.message.includes("Cannot access a chrome-extension:// URL")) {
       console.warn("Failed to inject content script:", e);
     }
   }
-  chrome.tabs.sendMessage(tabId, message, (response) => {
-    if (chrome.runtime.lastError) {
-      console.error("Error sending message:", chrome.runtime.lastError.message);
+
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await chrome.tabs.sendMessage(tabId, message);
+      return response;
+    } catch (error) {
+      if (error.message.includes("Receiving end does not exist") && i < retries - 1) {
+        console.warn(`Retrying message to content script (${retries - 1 - i} attempts left):`, error.message);
+        await new Promise(resolve => setTimeout(resolve, 200)); // Wait 200ms before retrying
+      } else {
+        console.error("Error sending message:", error.message);
+        throw error; // Re-throw other errors or the last retry error
+      }
     }
-  });
+  }
+  return null; // Should not reach here if retries are exhausted and error is thrown
 }
 
 // 데이터 소스별 로드 함수
@@ -48,15 +58,16 @@ document.addEventListener("DOMContentLoaded", () => {
   loadAPI();
 
   // 초기화 버튼 설정
-  document.getElementById("resetBtn").addEventListener("click", () => {
+  document.getElementById("resetBtn").addEventListener("click", async () => {
     // 팝업 내 검색 입력란 초기화
     document.getElementById("searchInput").value = '';
     // 전체 데이터 다시 렌더링
     renderTable(data);
 
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      sendMessageToContentScript(tabs[0].id, { action: "reset" });
-    });
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (tab) {
+      await sendMessageToContentScript(tab.id, { action: "reset" });
+    }
     window.close();
   });
 
@@ -143,19 +154,22 @@ function renderTable(filteredData) {
 // 반영 버튼 이벤트 설정 함수
 function setupReflectButtons() {
   document.querySelectorAll(".reflectBtn").forEach((button) =>
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       const instCode = button.dataset.instcode;
       const applCode = button.dataset.applcode;
       const kindCode = button.dataset.kindcode;
       const txCode = button.dataset.txcode;
 
-      sendMessageToContentScript(tabs[0].id, {
-        action: "inject",
-        instCode,
-        applCode,
-        kindCode,
-        txCode,
-      });
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (tab) {
+        await sendMessageToContentScript(tab.id, {
+          action: "inject",
+          instCode,
+          applCode,
+          kindCode,
+          txCode,
+        });
+      }
       window.close();
     })
   );

@@ -40,7 +40,7 @@ function injectInputValues(doc, message) {
   const mappings = [
     { id: "INST_CD", value: message.instCode },
     { id: "APPL_CD", value: message.applCode },
-    { id: "KIND_CD_1", value: message.kindCode },
+    { id: "KIND_CD", value: message.kindCode },
     { id: "TX_CD", value: message.txCode },
   ];
 
