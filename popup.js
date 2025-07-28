@@ -1,5 +1,25 @@
 let data = [];
 
+// 메시지를 content script로 보내는 헬퍼 함수
+async function sendMessageToContentScript(tabId, message) {
+  try {
+    await chrome.scripting.executeScript({
+      target: { tabId: tabId },
+      files: ['content.js'],
+    });
+  } catch (e) {
+    // content.js가 이미 주입되어 있을 경우 발생하는 에러는 무시
+    if (!e.message.includes("Cannot access a chrome-extension:// URL")) {
+      console.warn("Failed to inject content script:", e);
+    }
+  }
+  chrome.tabs.sendMessage(tabId, message, (response) => {
+    if (chrome.runtime.lastError) {
+      console.error("Error sending message:", chrome.runtime.lastError.message);
+    }
+  });
+}
+
 // 데이터 소스별 로드 함수
 function loadAPI() {
   fetch("http://localhost:3000/downTx")
@@ -29,8 +49,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 초기화 버튼 설정
   document.getElementById("resetBtn").addEventListener("click", () => {
+    // 팝업 내 검색 입력란 초기화
+    document.getElementById("searchInput").value = '';
+    // 전체 데이터 다시 렌더링
+    renderTable(data);
+
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, { action: "reset" });
+      sendMessageToContentScript(tabs[0].id, { action: "reset" });
     });
     window.close();
   });
@@ -124,14 +149,12 @@ function setupReflectButtons() {
       const kindCode = button.dataset.kindcode;
       const txCode = button.dataset.txcode;
 
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id, {
-          action: "inject",
-          instCode,
-          applCode,
-          kindCode,
-          txCode,
-        });
+      sendMessageToContentScript(tabs[0].id, {
+        action: "inject",
+        instCode,
+        applCode,
+        kindCode,
+        txCode,
       });
       window.close();
     })
