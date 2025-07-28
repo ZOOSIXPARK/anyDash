@@ -7,26 +7,30 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h3>Anylink 코드 입력기</h3>
-  <input type="text" id="searchInput" placeholder="검색어를 입력하세요" />
-
-  <div style="overflow-x: auto; max-height: 400px; border: 1px solid #ddd;">
-    <table id="dataTable">
-      <thead>
-        <tr>
-          <th>기관명</th>
-          <th>기관코드</th>
-          <th>신청코드</th>
-          <th>종별코드</th>
-          <th>거래코드</th>
-          <th>업무명</th>
-          <th>반영</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+  <div class="container">
+    <div class="header-container">
+      <h3>Anylink 코드 입력기</h3>
+      <button id="resetBtn" class="reset-button">초기화</button>
+    </div>
+    <input type="text" id="searchInput" placeholder="검색어를 입력하세요..." />
+    <div class="table-container">
+      <table id="dataTable">
+        <thead>
+          <tr>
+            <th>반영</th>
+            <th>기관명</th>
+            <th>기관코드</th>
+            <th>종별코드</th>
+            <th>거래코드</th>
+            <th>업무명</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 데이터가 여기에 동적으로 추가됩니다 -->
+        </tbody>
+      </table>
+    </div>
   </div>
-
   <script src="popup.js"></script>
 </body>
 </html>

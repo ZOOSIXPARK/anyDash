@@ -20,6 +20,18 @@ chrome.runtime.onMessage.addListener((message) => {
         console.error("iframe 접근 실패:", e);
       }
     }
+  } else if (message.action === "reset") {
+    const iframes = document.querySelectorAll("iframe");
+    for (const iframe of iframes) {
+      try {
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        if (doc) {
+          injectInputValues(doc, { instCode: "", kindCode: "", txCode: "" });
+        }
+      } catch (e) {
+        console.error("iframe 접근 실패:", e);
+      }
+    }
   }
 });
 
@@ -27,7 +39,6 @@ chrome.runtime.onMessage.addListener((message) => {
 function injectInputValues(doc, message) {
   const mappings = [
     { id: "INST_CD", value: message.instCode },
-    { id: "APPL_CD", value: message.applCode },
     { id: "KIND_CD_1", value: message.kindCode },
     { id: "TX_CD", value: message.txCode },
   ];
