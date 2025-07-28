@@ -102,6 +102,7 @@ function renderTable(filteredData) {
         </td>
         <td>${item.inst_nm}</td>
         <td>${item.inst_code}</td>
+        <td>${item.appl_code}</td>
         <td>${item.kind_code}</td>
         <td>${item.tx_code}</td>
         <td>${item.upmu_nm}</td>
@@ -119,6 +120,7 @@ function setupReflectButtons() {
   document.querySelectorAll(".reflectBtn").forEach((button) =>
     button.addEventListener("click", () => {
       const instCode = button.dataset.instcode;
+      const applCode = button.dataset.applcode;
       const kindCode = button.dataset.kindcode;
       const txCode = button.dataset.txcode;
 
@@ -126,6 +128,7 @@ function setupReflectButtons() {
         chrome.tabs.sendMessage(tabs[0].id, {
           action: "inject",
           instCode,
+          applCode,
           kindCode,
           txCode,
         });
